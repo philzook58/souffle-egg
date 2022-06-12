@@ -1,3 +1,7 @@
+# souffle-egg
+An embedding of egraphs into souffle that seems decently fast.
+See <https://www.philipzucker.com/souffle-egg4/> for an explanation.
+
 So what is the lesson here.
 
 run.sh to use interpreter
@@ -93,5 +97,5 @@ I guess I could compress it into a single straitifed program now.
 And you just run it over and over.
 
 
-Counting on souffle ooeprational ordering is radically wrong
+Counting on souffle ooeprational ordering is radically wrong. ors are decoupled. heads are decoupled. 
 However, souffle _does_ respect stratification
