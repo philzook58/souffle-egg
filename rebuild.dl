@@ -1,0 +1,48 @@
+.pragma "libraries" "unionfind"
+
+.decl add0(x:number, y : number, z : number)
+.decl add1(x:number, y : number, z : number)
+.decl add2(x:number, y : number, z : number)
+.decl add3(x:number, y : number, z : number)
+.decl add4(x:number, y : number, z : number)
+.decl add(x:number, y : number, z : number)
+
+.input add0()
+.functor findNode(number):number 
+.functor unionNodes(number,number):number
+
+add0(@findNode(x), @findNode(y), @findNode(z)) :- add0(x,y,z).
+add0(x,y,@unionNodes(z,z1)) :- add0(x,y,z), add0(x,y,z1), z1 != z.
+add0(x,y,z) <= add0(@findNode(x),@findNode(y),@findNode(z)) :- true.
+
+add1(x,y,z) :- add0(x,y,z).
+
+add1(@findNode(x), @findNode(y), @findNode(z)) :- add1(x,y,z).
+add1(x,y,@unionNodes(z,z1)) :- add1(x,y,z), add1(x,y,z1), z1 != z.
+add1(x,y,z) <= add1(@findNode(x),@findNode(y),@findNode(z)) :- true.
+
+add2(x,y,z) :- add1(x,y,z).
+
+add2(@findNode(x), @findNode(y), @findNode(z)) :- add2(x,y,z).
+add2(x,y,@unionNodes(z,z1)) :- add2(x,y,z), add2(x,y,z1), z1 != z.
+add2(x,y,z) <= add2(@findNode(x),@findNode(y),@findNode(z)) :- true.
+
+add3(x,y,z) :- add2(x,y,z).
+
+add3(@findNode(x), @findNode(y), @findNode(z)) :- add3(x,y,z).
+add3(x,y,@unionNodes(z,z1)) :- add3(x,y,z), add3(x,y,z1), z1 != z.
+add3(x,y,z) <= add3(@findNode(x),@findNode(y),@findNode(z)) :- true.
+
+add4(x,y,z) :- add3(x,y,z).
+
+add4(@findNode(x), @findNode(y), @findNode(z)) :- add4(x,y,z).
+add4(x,y,@unionNodes(z,z1)) :- add4(x,y,z), add4(x,y,z1), z1 != z.
+add4(x,y,z) <= add4(@findNode(x),@findNode(y),@findNode(z)) :- true.
+
+add(x,y,z) :- add4(x,y,z).
+
+add(@findNode(x), @findNode(y), @findNode(z)) :- add(x,y,z).
+add(x,y,@unionNodes(z,z1)) :- add(x,y,z), add(x,y,z1), z1 != z.
+add(x,y,z) <= add(@findNode(x),@findNode(y),@findNode(z)) :- true.
+.output add()
+.printsize add

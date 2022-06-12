@@ -1,0 +1,46 @@
+.pragma "libraries" "unionfind"
+.decl add0(x:number, y : number, z : number)
+.decl add(x:number, y : number, z : number)
+.decl maxid0(x : number)
+.decl id0(x : number)
+
+add0(1,2,12).
+add0(12,3,123).
+add0(123,4,1234).
+add0(1234,5,12345).
+add0(12345,6,123456).
+
+.input add0
+id0(x) :- add0(x,_,_).
+id0(y) :- add0(_,y,_).
+id0(z) :- add0(_,_,z).
+
+maxid0(x) :- x = 1 + max t : id0(t).
+
+add(y,z,autoinc() + mid) :- add0(_x,y,xy), add0(xy,z,_xyz), maxid0(mid).
+add(x,y,autoinc() + mid) :- add0(x,yz,_xyz), add0(y,_z,yz), maxid0(mid).
+add(x,y,z) :- add0(x,y,z).
+
+
+add(y,x,xy) :- add(x,y,xy).
+add(x,yz, xyz) :- add(x,y,xy), add(xy,z,xyz), add(y,z,yz).
+add(xy,z, xyz) :- add(x,yz,xyz), add(y,z,yz), add(x,y,xy).
+
+//add(@findroot(x), @findroot(y), @findroot(z)) :- add(x,y,z). // canon
+// add(@findoot(x),@findroot(y),@unionroot(z,z1)) :- add(x,y,z), add(x,y,z1), z != z1. //congruence
+
+add(x1,y1,z1) :- add(x,y,z), eq(x,x1), eq(y,y1), eq(z,z1).
+eq(z,z1) :- add(x,y,z), add(x,y,z1), z1 < z.
+
+.decl eq(x : number, y : number)
+
+eq(x,x) :- add(x,_,_).
+eq(y,y) :- add(_,y,_).
+eq(z,z) :- add(_,_,z).
+
+eq(x,y) <= eq(x,z) :- z <= y.
+add(x,y,z) <= add(x1,y1,z1) :- eq(x,x1), eq(y,y1), eq(z,z1).
+//add(x,y,z) <= add(@findroot(x),@find(y),@find(z)).
+.output add()
+.output maxid0(IO=stdout)
+.output eq(IO=stdout)

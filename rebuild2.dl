@@ -1,0 +1,37 @@
+.pragma "libraries" "unionfind"
+
+.decl add0(x:number, y : number, z : number)
+.decl add(x:number, y : number, z : number)
+.decl dirty(z : number, n : number)
+.input add0()
+.functor findNode(number):number 
+.functor unionNodes(number,number):number
+
+
+add0(@findNode(x),@findNode(y),@findNode(z)) :- add0(x,y,z), (true ; dirty(x,_m) ; dirty(y,_m)).
+add0(x,y,@unionNodes(z,z1)), dirty(z,m+1), dirty(z1,m+1) :- add0(x,y,z), add0(x,y,z1), z1 != z, (m = 0 ; dirty(x,m) ; dirty(y,m)).
+add0(x,y,z) <= add0(@findNode(x),@findNode(y),@findNode(z)) :- true; dirty(x,_); dirty(y,_); dirty(z,_).
+
+add(x,y,z) :- add0(x,y,z).
+
+//dirty(x,m) <= dirty(x,m1) :- m <= m1.
+/*
+.decl add_iter(x:number, y : number, z : number, n : number)
+add_iter(x,y,z,0) :- add0(x,y,z).
+
+
+add_iter(@findNode(x), @findNode(y), @findNode(z), m) :- add_iter(x,y,z,n), (m=n ; dirty(x,m) ; dirty(y,m); dirty(z,m)).
+//add_iter(x,y,@unionNodes(z,z1),max(n,n1)+1) :- add_iter(x,y,z,n), add_iter(x,y,z1, n1), z1 != z.
+
+add_iter(x,y,@unionNodes(z,z1), m), dirty(z,m), dirty(z1,m) :- add_iter(x,y,z,n), add_iter(x,y,z1, n1), z1 != z, m = max(n,n1)+1.
+add_iter(x,y,z,_) <= add_iter(@findNode(x),@findNode(y),@findNode(z), _) :- dirty(x,_) ; dirty(y,_) ; dirty(z,_) .
+dirty(x,m) <= dirty(x,m1) :- m <= m1.
+
+add(x,y,z) :- add_iter(x,y,z,_).
+
+// seminaive:
+//add(x,y,z) :- add_iter(x,y,z,0).
+//dadd(x,y,z) :- add_iter(x,y,z,n), n > 0.
+*/
+.output add()
+.printsize add

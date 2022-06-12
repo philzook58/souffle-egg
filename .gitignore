@@ -1,0 +1,7 @@
+*.so
+rebuild
+add_uf
+*.cpp
+*.o
+*.csv
+*.facts

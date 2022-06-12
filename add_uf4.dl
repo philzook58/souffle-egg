@@ -1,0 +1,66 @@
+.pragma "libraries" "unionfind"
+.decl add0(x:number, y : number, z : number)
+.decl add(x:number, y : number, z : number)
+.decl maxid0(x : number)
+.decl id0(x : number)
+.decl dirty(z : number, n : number)
+.functor findNode(number):number 
+.functor unionNodes(number,number):number
+
+// should go in separate file
+/*
+add0(1,2,12).
+add0(12,3,123).
+add0(123,4,1234).
+add0(1234,5,12345).
+add0(12345,6,123456).
+add0(123456,7,1234567).
+add0(1234567,8,12345678).
+add0(12345678,9,123456789).
+*/
+.input add0
+
+// calculate fresh id offset
+id0(x) :- add0(x,_,_).
+id0(y) :- add0(_,y,_).
+id0(z) :- add0(_,_,z).
+
+maxid0(x) :- x = 1 + max t : id0(t).
+
+// generate new ids needed for certain rules
+add(y,z,autoinc() + mid) :- add0(_x,y,xy), add0(xy,z,_xyz), 0 = count : add0(y,z,_yz), maxid0(mid).
+add(x,y,autoinc() + mid) :- add0(x,yz,_xyz), add0(y,_z,yz), 0 = count : add0(x,y,_xy), maxid0(mid).
+add(x,y,z) :- add0(x,y,z).
+
+// Ematch for rewrites
+add(y,x,xy) :- add0(x,y,xy).
+add(x,yz,xyz) :- add0(x,y,xy), add0(xy,z,xyz), add0(y,z,yz).
+add(xy,z,xyz) :- add0(x,yz,xyz), add0(y,z,yz), add0(x,y,xy).
+
+// screws up the union find for some reason. :( . Or maybe just really slow
+//add(y,x,xy) :-   add(x,y,xy), add(y,x,_).
+//add(x,yz,xyz) :- add(x,y,xy), add(xy,z,xyz), add(y,z,yz), add(x,yz,_).
+//add(xy,z,xyz) :- add(x,yz,xyz), add(y,z,yz), add(x,y,xy), add(xy,z,xyz).
+
+
+add(@findNode(x),@findNode(y),@findNode(z)) :- add(x,y,z), (true ; dirty(x,_m) ; dirty(y,_m)).
+dirty(@unionNodes(z,z1),m), dirty(z,m), dirty(z1,m) :- add(x,y,z), add(x,y,z1), z1 != z, (m = 0 ; dirty(x,m) ; dirty(y,m)).
+
+// about the same
+//dirty(dz,m+1) :- add(x,y,z), add(x,y,z1), z1 != z, (m = 0 ; dirty(x,m) ; dirty(y,m)),
+//    z2 = @unionNodes(z,z1), ( z1 != z2, dz = z1 ; z2 != z, dz = z).
+
+// add(x,y,@unionNodes(z,z1)),
+// The illusion of lhs coupling is easy to fall into. 
+// Is there a subsumption ordering that screws us?
+// removing add(x,y,unionNodes) does something bad. This is worrying.
+// What if I did subsumption as a final pass? That might be more reliable?
+// Doesn't even have to be subsumption then
+// add(@findroot(x),@findRoot(y),@findNode(z)) :- add(x,y,z)
+//add(x,y,z) <= add(@findNode(x),@findNode(y),@findNode(z)) :- true; dirty(x,_); dirty(y,_); dirty(z,_).
+.decl add1(x : number, y : number, z : number)
+add1(@findNode(x),@findNode(y),@findNode(z)) :- add(x,y,z).
+
+
+.output add1(filename="add0.facts")
+.printsize add

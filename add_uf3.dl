@@ -1,0 +1,35 @@
+
+.decl add0(x:number, y : number, z : number)
+.decl add(x:number, y : number, z : number)
+.decl maxid0(x : number)
+.decl id0(x : number)
+
+.functor findNode(number):number 
+.functor unionNodes(number,number):number // performs union, returns 0
+
+add0(1,2,12).
+add0(12,3,123).
+add0(123,4,1234).
+add0(1234,5,12345).
+add0(12345,6,123456).
+add0(123456,7,1234567).
+add0(1234567,8,12345678).
+add0(12345678,9,123456789).
+
+.input add0
+id0(x) :- add0(x,_,_).
+id0(y) :- add0(_,y,_).
+id0(z) :- add0(_,_,z).
+
+maxid0(x) :- x = 1 + max t : id0(t).
+
+add(y,z,autoinc() + mid) :- add0(_x,y,xy), add0(xy,z,_xyz), 0 = count : add0(y,z,_yz), maxid0(mid).
+add(x,y,autoinc() + mid) :- add0(x,yz,_xyz), add0(y,_z,yz), 0 = count : add0(x,y,_xy), maxid0(mid).
+add(x,y,z) :- add0(x,y,z).
+
+add(y,x,xy) :- add0(x,y,xy).
+add(x,yz,xyz) :- add0(x,y,xy), add0(xy,z,xyz), add0(y,z,yz).
+add(xy,z,xyz) :- add0(x,yz,xyz), add0(y,z,yz), add0(x,y,xy).
+
+.output add()
+.printsize add

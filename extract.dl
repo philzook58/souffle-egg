@@ -1,0 +1,62 @@
+.type AExpr = Add {a : AExpr, b : AExpr } | Num { n : number}
+
+
+// do analysis
+
+:- min
+
+// choice-domain
+// 
+
+/*
+do aepxr evalustor first.
+So I have recursion down.
+
+.functor eval(x:AExpr):number stateful
+
+#define APP 0
+#define LAM 1
+#define BVAR 2
+
+ram::Domain eval(){
+
+ switch 
+ APP
+ LAM
+ BVAR
+}
+
+.comp Lam<T> {
+.type Term = 
+  | App {}
+  | Lam {}
+  | BVar {}
+  | Lit { : T}
+
+}
+
+optimal lambda graph reduction.
+extract all - perform extraction at every node.
+
+
+Convert tree to egraph
+add(as(x,number), as(y,number), as(t,number)), egraph(x), egraph(y) :- egraph($Add(x,y)).
+
+extract(x,y) : choicedomain x -> y
+
+extract(y, $Num(x)), height(y, 1) :- num(x,y).
+height( max()) :-
+
+
+height(z, ) :- add(_,_,z), h1 = min h: add(x,_,z), height(x,h), h2 = min h: add(_,y,z), hieght(y,).
+
+extract(z, $Add(y1,x1)) :- add(x,y,z), height(x, ), extract(y,y1), extract(x,x1).
+
+remove post hoc. Probablt can get out of conrol.
+extract() <= extract( t2), height(t1) <= hight(t2)
+
+
+
+
+
+*/
