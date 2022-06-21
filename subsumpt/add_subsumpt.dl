@@ -39,9 +39,10 @@ add(y,x,xy) :- add0(x,y,xy).
 add(x,yz,xyz) :- add0(x,y,xy), add0(xy,z,xyz), add0(y,z,yz).
 add(xy,z,xyz) :- add0(x,yz,xyz), add0(y,z,yz), add0(x,y,xy).
 
-root(x,x) :- add(x,_,_).
-root(y,y) :- add(_,y,_).
-root(z,z) :- add(_,_,z).
+// Hmm. A little awkward I can't use add0?
+root(x,x) :- add0(x,_,_).
+root(y,y) :- add0(_,y,_).
+root(z,z) :- add0(_,_,z).
 
 add(x1,y1,z1) :- add(x,y,z), root(x,x1), root(y,y1), root(z,z1).
 root(z,z1) :- add(x,y,z), add(x,y,z1), z1 < z.
@@ -52,7 +53,16 @@ root(x, y) <= root(x, y1) :- y1 <= y.
 //add(x, y, z) <= add(x1, y1, z1) :- root(x,x1), root(y,y1), root(z,z1).
 
 //add1 is projection of only roots
+add1(x,y,z) :- add(x,y,z), ((root(x,x) ; !root(x,_)), (root(y,y); !root(y,_)), (root(z,z) ; !root(z,_))).
+
+/* 
+alternatively include fresh ids in root
+root(x,x) :- add(x,_,_).
+root(y,y) :- add(_,y,_).
+root(z,z) :- add(_,_,z).
 add1(x,y,z) :- add(x,y,z), root(x,x), root(y,y), root(z,z).
+
+*/
 
 .output add1(filename="add0.facts")
 .printsize add1

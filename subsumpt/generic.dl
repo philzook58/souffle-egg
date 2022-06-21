@@ -1,0 +1,6 @@
+
+
+.decl fun0(f : symbol, x0 : number)
+.decl fun1(f : symbol, x0 : number, x1 : number)
+.decl fun2(f : symbol, x0 : number, x1 : number, x2 : number)
+// and so on.
